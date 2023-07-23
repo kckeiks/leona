@@ -71,6 +71,7 @@ where
                             kind: io::ErrorKind::WouldBlock,
                             detail: "server throttled the request.".into(),
                         }),
+                        channel_id: r.request.channel_id,
                     })?;
                 }
                 None => return Poll::Ready(None),
@@ -335,6 +336,7 @@ mod tests {
             .start_send(Response {
                 request_id: 0,
                 message: Ok(1),
+                channel_id: None,
             })
             .unwrap();
         assert_eq!(throttler.inner.in_flight_requests.len(), 0);
@@ -343,6 +345,7 @@ mod tests {
             Some(&Response {
                 request_id: 0,
                 message: Ok(1),
+                channel_id: None,
             })
         );
     }

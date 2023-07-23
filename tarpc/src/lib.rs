@@ -311,6 +311,7 @@ pub use crate::transport::sealed::Transport;
 
 use anyhow::Context as _;
 use futures::task::*;
+use std::net::SocketAddr;
 use std::sync::Arc;
 use std::{error::Error, fmt::Display, io, time::SystemTime};
 
@@ -340,6 +341,8 @@ pub enum ClientMessage<T> {
     },
 }
 
+type ChannelId = SocketAddr;
+
 /// A request from a client to a server.
 #[derive(Clone, Copy, Debug)]
 #[non_exhaustive]
@@ -349,6 +352,8 @@ pub struct Request<T> {
     pub context: context::Context,
     /// Uniquely identifies the request across all requests sent over a single channel.
     pub id: u64,
+    /// Channel ID.
+    channel_id: Option<ChannelId>,
     /// The request body.
     pub message: T,
 }
@@ -360,6 +365,8 @@ pub struct Request<T> {
 pub struct Response<T> {
     /// The ID of the request being responded to.
     pub request_id: u64,
+    /// af
+    channel_id: Option<ChannelId>,
     /// The response body, or an error if the request failed.
     pub message: Result<T, ServerError>,
 }

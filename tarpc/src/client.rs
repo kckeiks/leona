@@ -508,6 +508,7 @@ where
                 deadline: ctx.deadline,
                 trace_context: ctx.trace_context,
             },
+            channel_id: None,
         });
         self.in_flight_requests()
             .insert_request(request_id, ctx, span.clone(), response_completion)
@@ -642,6 +643,7 @@ mod tests {
             .send(Response {
                 request_id: 0,
                 message: Ok("Resp".into()),
+                channel_id: None,
             })
             .await
             .unwrap();
@@ -671,6 +673,7 @@ mod tests {
         tx.send(Ok(Response {
             request_id: 0,
             message: Ok("well done"),
+            channel_id: None,
         }))
         .unwrap();
         // resp's drop() is run, but should not send a cancel message.
@@ -721,6 +724,7 @@ mod tests {
             Response {
                 request_id: 0,
                 message: Ok("hello".into()),
+                channel_id: None,
             },
         )
         .await;

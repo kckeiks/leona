@@ -98,6 +98,7 @@ impl<Req, Resp> FakeChannel<io::Result<TrackedRequest<Req>>, Response<Resp>> {
                 },
                 id,
                 message,
+                channel_id: None,
             },
             abort_registration,
             span: Span::none(),

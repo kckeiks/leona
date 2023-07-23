@@ -714,6 +714,7 @@ impl<Req, Res> InFlightRequest<Req, Res> {
                     context,
                     message,
                     id: request_id,
+                    channel_id,
                 },
         } = self;
         let method = serve.method(&message);
@@ -729,6 +730,7 @@ impl<Req, Res> InFlightRequest<Req, Res> {
                 let response = Response {
                     request_id,
                     message: Ok(response),
+                    channel_id,
                 };
                 let _ = response_tx.send(response).await;
                 tracing::info!("BufferResponse");
@@ -837,6 +839,7 @@ mod tests {
             context: context::current(),
             id: 0,
             message: req,
+            channel_id: None,
         })
     }
 
@@ -856,13 +859,15 @@ mod tests {
                 id: 0,
                 context: context::current(),
                 message: (),
+                channel_id: None,
             })
             .unwrap();
         assert_matches!(
             channel.as_mut().start_request(Request {
                 id: 0,
                 context: context::current(),
-                message: ()
+                message: (),
+                channel_id: None,
             }),
             Err(AlreadyExistsError)
         );
@@ -877,6 +882,7 @@ mod tests {
             .as_mut()
             .start_request(Request {
                 id: 0,
+                channel_id: None,
                 context: context::current(),
                 message: (),
             })
@@ -885,6 +891,7 @@ mod tests {
             .as_mut()
             .start_request(Request {
                 id: 1,
+                channel_id: None,
                 context: context::current(),
                 message: (),
             })
@@ -908,6 +915,7 @@ mod tests {
             .as_mut()
             .start_request(Request {
                 id: 0,
+                channel_id: None,
                 context: context::current(),
                 message: (),
             })
@@ -937,6 +945,7 @@ mod tests {
             .as_mut()
             .start_request(Request {
                 id: 0,
+                channel_id: None,
                 context: context::current(),
                 message: (),
             })
@@ -979,6 +988,7 @@ mod tests {
             .as_mut()
             .start_request(Request {
                 id: 0,
+                channel_id: None,
                 context: context::current(),
                 message: (),
             })
@@ -1002,6 +1012,7 @@ mod tests {
             .as_mut()
             .start_request(Request {
                 id: 0,
+                channel_id: None,
                 context: context::current(),
                 message: (),
             })
@@ -1011,6 +1022,7 @@ mod tests {
             .as_mut()
             .start_send(Response {
                 request_id: 0,
+                channel_id: None,
                 message: Ok(()),
             })
             .unwrap();
@@ -1065,6 +1077,7 @@ mod tests {
             .channel_pin_mut()
             .start_request(Request {
                 id: 0,
+                channel_id: None,
                 context: context::current(),
                 message: (),
             })
@@ -1074,6 +1087,7 @@ mod tests {
             .channel_pin_mut()
             .start_send(Response {
                 request_id: 0,
+                channel_id: None,
                 message: Ok(()),
             })
             .unwrap();
@@ -1085,6 +1099,7 @@ mod tests {
             .responses_tx
             .send(Response {
                 request_id: 1,
+                channel_id: None,
                 message: Ok(()),
             })
             .await
@@ -1095,6 +1110,7 @@ mod tests {
             .channel_pin_mut()
             .start_request(Request {
                 id: 1,
+                channel_id: None,
                 context: context::current(),
                 message: (),
             })
@@ -1116,6 +1132,7 @@ mod tests {
             .channel_pin_mut()
             .start_request(Request {
                 id: 0,
+                channel_id: None,
                 context: context::current(),
                 message: (),
             })
@@ -1125,6 +1142,7 @@ mod tests {
             .channel_pin_mut()
             .start_send(Response {
                 request_id: 0,
+                channel_id: None,
                 message: Ok(()),
             })
             .unwrap();
@@ -1135,6 +1153,7 @@ mod tests {
             .channel_pin_mut()
             .start_request(Request {
                 id: 1,
+                channel_id: None,
                 context: context::current(),
                 message: (),
             })
@@ -1145,6 +1164,7 @@ mod tests {
             .responses_tx
             .send(Response {
                 request_id: 1,
+                channel_id: None,
                 message: Ok(()),
             })
             .await
